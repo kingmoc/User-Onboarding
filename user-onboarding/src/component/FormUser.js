@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { Button, Form, Grid, } from 'semantic-ui-react'
+import { Button, Form, Grid, Icon, Modal, Header, Image, Label, } from 'semantic-ui-react'
 import * as Yup from "yup";
 import axios from 'axios'
 
@@ -27,6 +27,16 @@ const FormUser = () => {
                 axios.post(url, values)
                     .then(res => {
                         console.log(res.data)
+
+                        window.alert(
+                            `Thanks for Submitting Your Form \n 
+                            Name: ${res.data.name.toUpperCase()} \n 
+                            Email: ${res.data.email.toUpperCase()} \n 
+                            Password: ${res.data.password.toUpperCase()}
+                            
+                            Have A Wonderful Day!` 
+                          )
+
                         actions.setSubmitting(false)
                     })
                     .catch(err => console.log(err.response))
@@ -70,17 +80,30 @@ const FormUser = () => {
                                 error={touched.password && errors.password}
                             />
 
+                            <Header sub color='red'> {touched.tos && errors.tos} </Header>
+
                             <Form.Field 
                                 type="checkbox"
                                 control="input"
                                 name="tos"
                                 label="Terms and Conditions"
-                                value={values.tos}
+                                // value={values.tos}
+                                checked={values.tos}
                                 onChange={handleChange}
-                                required
                             />
 
-                            <Button type='submit' positive loading={isSubmitting}>Submit</Button>
+                            <Button 
+                                positive 
+                                animated
+                                type='submit' 
+                                loading={isSubmitting}
+                            >
+                                <Button.Content visible>Submit</Button.Content>
+                                <Button.Content hidden>
+                                    <Icon name='arrow right' />
+                                </Button.Content>                                
+                            </Button>
+
                         </Form>
 
                     </Grid.Column>
