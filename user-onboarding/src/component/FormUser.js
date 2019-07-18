@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Formik } from 'formik';
-import { Button, Form, Grid, Icon, Modal, Header, Image, Label, } from 'semantic-ui-react'
+import { Button, Form, Grid, Icon, Header, Message, } from 'semantic-ui-react'
 import * as Yup from "yup";
 import axios from 'axios'
-
 
 
 const FormUser = () => {
@@ -45,36 +44,42 @@ const FormUser = () => {
             validationSchema={UserSignUpSchema}
         
             render = {({ values, handleSubmit, handleChange, errors, touched, isSubmitting, ...props }) => (
-                <Grid>
-                    <Grid.Column width={4}></Grid.Column>
-                    <Grid.Column width={8}>
+                <Grid style={{ height: '100vh' }} verticalAlign='middle' textAlign='center'>
+                    
+                    <Grid.Column width={4}>
 
-                        <Form onSubmit={handleSubmit}>
+                        <Header as='h1' color='yellow' textAlign='center'>
+                            <Icon name='user secret' color='blue' /> User Onboarding
+                        </Header>
+                        <Form onSubmit={handleSubmit} size='large'>
                             <Form.Input   
-                                label='Name'
                                 type="text"
                                 name="name"
                                 placeholder="Name"
+                                icon='user circle' 
+                                iconPosition='left'
                                 value={values.name}
                                 onChange={handleChange}
                                 error={touched.name && errors.name}
                             />
 
                              <Form.Input   
-                                label='Email'
                                 type="text"
                                 name="email"
                                 placeholder="Email"
+                                icon='mail' 
+                                iconPosition='left'
                                 value={values.email}
                                 onChange={handleChange}
                                 error={touched.email && errors.email}
                             />
 
                             <Form.Input
-                                label='Password'   
                                 type="password"
                                 name="password"
                                 placeholder="Password"
+                                icon='lock' 
+                                iconPosition='left'
                                 value={values.password}
                                 onChange={handleChange}
                                 error={touched.password && errors.password}
@@ -87,7 +92,6 @@ const FormUser = () => {
                                 control="input"
                                 name="tos"
                                 label="Terms and Conditions"
-                                // value={values.tos}
                                 checked={values.tos}
                                 onChange={handleChange}
                             />
@@ -96,6 +100,7 @@ const FormUser = () => {
                                 positive 
                                 animated
                                 type='submit' 
+                                fluid
                                 loading={isSubmitting}
                             >
                                 <Button.Content visible>Submit</Button.Content>
@@ -106,8 +111,12 @@ const FormUser = () => {
 
                         </Form>
 
+                        <Message floating>
+                        <Icon name='help' />
+                            Already signed up?&nbsp;<a href='#'>Login here</a>&nbsp;instead.
+                        </Message>
+
                     </Grid.Column>
-                    <Grid.Column width={4}></Grid.Column>
                 </Grid>
             )}        
         
@@ -118,11 +127,12 @@ const FormUser = () => {
 const UserSignUpSchema = Yup.object().shape({
 
     name: Yup.string()
-        .min(3, 'Not Long Enough')
+        .min(3, 'Not Long Enough - Ya')
         .max(15, 'Slow Down Partner')
         .required('You must participate if you want the goods'),
     email: Yup.string()
         .email("Can't find that type of Email!")
+        .notOneOf(['waffle@syrup.com'], "That email is already taken.")
         .required('You must participate if you want the goods'),
     password: Yup.string()
         .min(3, 'Not Long Enough')
