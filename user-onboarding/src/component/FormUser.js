@@ -1,8 +1,8 @@
 import React from 'react';
 import { Formik } from 'formik';
 import { Button, Form, Grid, } from 'semantic-ui-react'
-import Header from './Header'
 import * as Yup from "yup";
+import axios from 'axios'
 
 
 
@@ -18,13 +18,23 @@ const FormUser = () => {
                 password: "",
                 tos: false
             }}
-            onSubmit={(values) => {
-                console.log(values)
+            onSubmit={(values, actions) => {
+                actions.resetForm()
+                const url = "https://reqres.in/api/users";
+
+                actions.setSubmitting(true)
+
+                axios.post(url, values)
+                    .then(res => {
+                        console.log(res.data)
+                        actions.setSubmitting(false)
+                    })
+                    .catch(err => console.log(err.response))
             }}
 
             validationSchema={UserSignUpSchema}
         
-            render = {({ values, handleSubmit, handleChange, errors, touched, ...props }) => (
+            render = {({ values, handleSubmit, handleChange, errors, touched, isSubmitting, ...props }) => (
                 <Grid>
                     <Grid.Column width={4}></Grid.Column>
                     <Grid.Column width={8}>
@@ -50,7 +60,6 @@ const FormUser = () => {
                                 error={touched.email && errors.email}
                             />
 
-
                             <Form.Input
                                 label='Password'   
                                 type="password"
@@ -60,7 +69,6 @@ const FormUser = () => {
                                 onChange={handleChange}
                                 error={touched.password && errors.password}
                             />
-
 
                             <Form.Field 
                                 type="checkbox"
@@ -72,8 +80,7 @@ const FormUser = () => {
                                 required
                             />
 
-                            
-                            <Button type='submit'>Submit</Button>
+                            <Button type='submit' positive loading={isSubmitting}>Submit</Button>
                         </Form>
 
                     </Grid.Column>
@@ -101,38 +108,5 @@ const UserSignUpSchema = Yup.object().shape({
     tos: Yup.boolean()
         .oneOf([true], 'Please Check Before Submit')
 })
-
-// const FormUser = () => {
-//     return (
-//         <Form>
-
-//             <Field type="text" name="name" placeholder="Name" />
-//             <Field type="email" name="email" placeholder="Email" />
-//             <Field type="password" name="password" placeholder="Password" />
-//             <Field type="checkbox" name="tos" label="Terms of Service" />
-//             <button>Submit!</button>
-
-//         </Form>
-//     );
-// };
-
-// const FormikFormUser = withFormik({
-
-//     mapPropsToValues: () => {
-//         return {
-//             name: "",
-//             email: "",
-//             password: "",
-//             tos: false
-//         }
-//     },
-
-//     handleSubmit: (values) => {
-//         console.log(values)
-//     }
-
-// })(FormUser)
-
-// export default FormikFormUser;    
 
 export default FormUser;    
